@@ -105,6 +105,8 @@ void Error_Handler(void);
 #define LED1_OUTPUT_GPIO_Port GPIOD
 #define LED2_OUTPUT_Pin GPIO_PIN_1
 #define LED2_OUTPUT_GPIO_Port GPIOD
+#define ONE_WIRE_Pin GPIO_PIN_6
+#define ONE_WIRE_GPIO_Port GPIOB
 #define BUZ_OUTPUT_Pin GPIO_PIN_7
 #define BUZ_OUTPUT_GPIO_Port GPIOB
 
