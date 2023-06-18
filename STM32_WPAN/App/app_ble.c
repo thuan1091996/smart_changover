@@ -179,6 +179,8 @@ typedef struct
 #define BD_ADDR_SIZE_LOCAL    6
 
 /* USER CODE BEGIN PD */
+#define BLE_COMPLETE_NAME_LEN					(21)
+#define BLE_INCLUDE_SERVICE_UUID_IN_ADV_PACKT		(0)
 
 /* USER CODE END PD */
 
@@ -223,7 +225,8 @@ PLACE_IN_SECTION("TAG_OTA_START") const uint32_t MagicKeywordAddress = (uint32_t
 static BleApplicationContext_t BleApplicationContext;
 static uint16_t AdvIntervalMin, AdvIntervalMax;
 
-static const char a_LocalName[] = {AD_TYPE_COMPLETE_LOCAL_NAME ,'S','C','O'};
+static char a_LocalName[BLE_COMPLETE_NAME_LEN] = {AD_TYPE_COMPLETE_LOCAL_NAME ,'S','A','C','-','B','0','0','-'};
+
 uint8_t a_ManufData[14] = {sizeof(a_ManufData)-1,
                            AD_TYPE_MANUFACTURER_SPECIFIC_DATA,
                            0x01 /*SKD version */,
@@ -1028,6 +1031,13 @@ static void Adv_Request(APP_BLE_ConnStatus_t NewStatus)
   }
 
   BleApplicationContext.Device_Connection_Status = NewStatus;
+  /* Append adv name with MAC addr*/
+  char BLE_MAC_ADDR[6];
+  const uint8_t *pMacAddr= BleGetBdAddress();
+  // Convert MAC address to string
+  sprintf((char *) BLE_MAC_ADDR, "%02X%02X%02X%02X%02X%02X", pMacAddr[5], pMacAddr[4], pMacAddr[3], pMacAddr[2], pMacAddr[1], pMacAddr[0]);
+  strcat(a_LocalName, BLE_MAC_ADDR);
+
   /* Start Fast or Low Power Advertising */
   ret = aci_gap_set_discoverable(ADV_IND,
                                  Min_Inter,
@@ -1036,7 +1046,11 @@ static void Adv_Request(APP_BLE_ConnStatus_t NewStatus)
                                  NO_WHITE_LIST_USE, /* use white list */
                                  sizeof(a_LocalName),
                                  (uint8_t*) &a_LocalName,
+#if (BLE_INCLUDE_SERVICE_UUID_IN_ADV_PACKT == 1)
                                  BleApplicationContext.BleApplicationContext_legacy.advtServUUIDlen,
+#else
+                                 0,
+#endif /* End of BLE_INCLUDE_SERVICE_UUID_IN_ADV_PACKT */
                                  BleApplicationContext.BleApplicationContext_legacy.advtServUUID,
                                  0,
                                  0);
