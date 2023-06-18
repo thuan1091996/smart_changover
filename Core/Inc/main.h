@@ -111,7 +111,10 @@ void Error_Handler(void);
 #define BUZ_OUTPUT_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+#define APP_VERSION_NUMBER  "V0.0.1"
+#define APP_VERSION_MAJOR   0
+#define APP_VERSION_MINOR   0
+#define APP_VERSION_BUILD   1
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
