@@ -12,8 +12,8 @@
 
 
 /* Overwrite */
-void SVCCTL_InitCustomSvc( void )
-{
-	Custom_STM_Service_Init();
-}
+//void SVCCTL_InitCustomSvc( void )
+//{
+//	Custom_STM_Service_Init();
+//}
 
