@@ -25,7 +25,7 @@
 #include "ble.h"
 #include "custom_app.h"
 #include "custom_stm.h"
-
+#include "cmd_handler.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -81,7 +81,6 @@ static void Custom_Char_read_notify_Update_Char(void);
 static void Custom_Char_read_notify_Send_Notification(void);
 
 /* USER CODE BEGIN PFP */
-
 /* USER CODE END PFP */
 
 /* Functions Definition ------------------------------------------------------*/
@@ -117,6 +116,21 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
 
     case CUSTOM_STM_CHAR_WRITE_WRITE_EVT:
       /* USER CODE BEGIN CUSTOM_STM_CHAR_WRITE_WRITE_EVT */
+
+
+#if (CFG_DEBUG_APP_TRACE != 0)
+    {
+		#define MSG_DEBUG_MAX_LEN	100
+        char debug_msg_buffer[MSG_DEBUG_MAX_LEN]={0};
+		APP_DBG_MSG("APP NOTIFICATION WRITE EVT: Received %d B \n", pNotification->DataTransfered.Length);
+        for(uint8_t i=0; (i < pNotification->DataTransfered.Length) && (i < MSG_DEBUG_MAX_LEN/2); i++)
+          sprintf(&debug_msg_buffer[i*2], "%02X", pNotification->DataTransfered.pPayload[i]);
+        APP_DBG_MSG("Payload: %s \n", (char*)debug_msg_buffer);
+    }
+#endif  /* End of CFG_DEBUG_APP_TRACE */
+		app_packet_handler(pNotification->DataTransfered.pPayload, &pNotification->DataTransfered.Length);
+
+
 
       /* USER CODE END CUSTOM_STM_CHAR_WRITE_WRITE_EVT */
       break;

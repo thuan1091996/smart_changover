@@ -52,6 +52,12 @@ typedef struct
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define BLE_COMPLETE_NAME_LEN							(21)
+#define BLE_INCLUDE_SERVICE_UUID_IN_ADV_PACKT			(0)
+#define BLE_WRITE_CHAR_ATT_MAX_LEN				      	(20)
+#define BLE_READ_NOTIFY_CHAR_ATT_MAX_LEN			  	(20)
+#define DEV_ID                                  		(0x10)
+
 
 /* USER CODE END EC */
 

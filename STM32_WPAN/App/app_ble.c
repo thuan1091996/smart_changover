@@ -179,8 +179,7 @@ typedef struct
 #define BD_ADDR_SIZE_LOCAL    6
 
 /* USER CODE BEGIN PD */
-#define BLE_COMPLETE_NAME_LEN					(21)
-#define BLE_INCLUDE_SERVICE_UUID_IN_ADV_PACKT		(0)
+
 
 /* USER CODE END PD */
 

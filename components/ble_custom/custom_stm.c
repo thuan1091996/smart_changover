@@ -23,7 +23,7 @@
 #include "custom_stm.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "custom_app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -194,6 +194,12 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /* USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
+            APP_DBG_MSG(">>== WRITE EVENT FROM GATT CLIENT: Received %d Bytes:", attribute_modified->Attr_Data_Length);
+            //Forward data to app notify
+            Notification.Custom_Evt_Opcode = CUSTOM_STM_CHAR_WRITE_WRITE_EVT;
+            Notification.DataTransfered.Length = attribute_modified->Attr_Data_Length;
+            Notification.DataTransfered.pPayload = attribute_modified->Attr_Data;
+            Custom_STM_App_Notification(&Notification);
 
             /* USER CODE END CUSTOM_STM_Service_1_Char_2_ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE */
           } /* if (attribute_modified->Attr_Handle == (CustomContext.CustomChar_WriteHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
@@ -234,6 +240,14 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
             /* Allow or reject a write request from a client using aci_gatt_write_resp(...) function */
             /*USER CODE BEGIN CUSTOM_STM_Service_1_Char_2_ACI_GATT_WRITE_PERMIT_REQ_VSEVT_CODE */
 
+            // Allow write request to client
+            APP_DBG_MSG(">>== ACCEPT WRITE REQ FROM CLIENT \n");
+            aci_gatt_write_resp(write_perm_req->Connection_Handle,
+            					write_perm_req->Attribute_Handle,
+								0x00, /* write_status = 0 (no error))*/
+								0,    /* err_code */
+								write_perm_req->Data_Length,
+								(uint8_t *)&write_perm_req->Data[0]);
             /*USER CODE END CUSTOM_STM_Service_1_Char_2_ACI_GATT_WRITE_PERMIT_REQ_VSEVT_CODE*/
           } /*if (write_perm_req->Attribute_Handle == (CustomContext.CustomChar_WriteHdle + CHARACTERISTIC_VALUE_ATTRIBUTE_OFFSET))*/
 
@@ -326,7 +340,7 @@ void SVCCTL_InitCustomSvc(void)
   COPY_CHAR_READ_NOTIFY_UUID(uuid.Char_UUID_128);
   ret = aci_gatt_add_char(CustomContext.CustomCustom_SvcHdle,
                           UUID_TYPE_128, &uuid,
-                          SizeChar_Read_Notify,
+						  BLE_READ_NOTIFY_CHAR_ATT_MAX_LEN,
                           CHAR_PROP_READ | CHAR_PROP_NOTIFY,
                           ATTR_PERMISSION_NONE,
                           GATT_NOTIFY_ATTRIBUTE_WRITE | GATT_NOTIFY_WRITE_REQ_AND_WAIT_FOR_APPL_RESP | GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
@@ -347,7 +361,7 @@ void SVCCTL_InitCustomSvc(void)
   COPY_CHAR_WRITE_UUID(uuid.Char_UUID_128);
   ret = aci_gatt_add_char(CustomContext.CustomCustom_SvcHdle,
                           UUID_TYPE_128, &uuid,
-                          SizeChar_Write,
+						  BLE_WRITE_CHAR_ATT_MAX_LEN,
                           CHAR_PROP_WRITE,
                           ATTR_PERMISSION_NONE,
                           GATT_NOTIFY_ATTRIBUTE_WRITE | GATT_NOTIFY_WRITE_REQ_AND_WAIT_FOR_APPL_RESP | GATT_NOTIFY_READ_REQ_AND_WAIT_FOR_APPL_RESP,
