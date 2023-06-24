@@ -224,9 +224,16 @@ void DbgTraceInit( void )
  * @param	...: arguments to be formatted in format string
  * @retval none
  */
+//size_t _write(int handle, const unsigned char * buf, size_t bufSize)
+//{
+// return ( DbgTraceWrite(handle, buf, bufSize) );
+//}
+
 size_t _write(int handle, const unsigned char * buf, size_t bufSize)
 {
-  return ( DbgTraceWrite(handle, buf, bufSize) );
+	extern UART_HandleTypeDef hlpuart1;
+	HAL_UART_Transmit(&hlpuart1, buf, bufSize, 200);
+	return bufSize;
 }
 
 #else
