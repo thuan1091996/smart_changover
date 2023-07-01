@@ -562,7 +562,6 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
            */
 
           HW_TS_Stop(BleApplicationContext.Advertising_mgr_timer_Id);
-
           APP_DBG_MSG(">>== HCI_LE_CONNECTION_COMPLETE_SUBEVT_CODE - Connection handle: 0x%x\n", p_connection_complete_event->Connection_Handle);
           APP_DBG_MSG("     - Connection established with Central: @:%02x:%02x:%02x:%02x:%02x:%02x\n",
                       p_connection_complete_event->Peer_Address[5],
@@ -589,7 +588,15 @@ SVCCTL_UserEvtFlowStatus_t SVCCTL_App_Notification(void *p_Pckt)
           }
           BleApplicationContext.BleApplicationContext_legacy.connectionHandle = p_connection_complete_event->Connection_Handle;
           /* USER CODE BEGIN HCI_EVT_LE_CONN_COMPLETE */
-
+          ret = aci_gatt_exchange_config(p_connection_complete_event->Connection_Handle);
+          if (ret != BLE_STATUS_SUCCESS)
+          {
+            APP_DBG_MSG("==>> ATT MTU exchange procedure triggered : fail\n\r");
+          }
+          else
+          {
+            APP_DBG_MSG("==>> ATT MTU exchange procedure triggered : success\n\r");
+          }
           // Additional actions for connection events
           handleNotification.Custom_Evt_Opcode = CUSTOM_CONN_HANDLE_EVT;
           handleNotification.ConnectionHandle  = BleApplicationContext.BleApplicationContext_legacy.connectionHandle;
@@ -1068,11 +1075,11 @@ static void Adv_Request(APP_BLE_ConnStatus_t NewStatus)
   {
     if (NewStatus == APP_BLE_FAST_ADV)
     {
-      APP_DBG_MSG("==>> Start Fast Advertising Failed , result: %d \n\r", ret);
+      APP_DBG_MSG("==>> Start Fast Update Advertising data Failed , result: %d \n\r", ret);
     }
     else
     {
-      APP_DBG_MSG("==>> Start Low Power Advertising Failed , result: %d \n\r", ret);
+      APP_DBG_MSG("==>> Start Low Power Update Advertising data Failed , result: %d \n\r", ret);
     }
   }
   else

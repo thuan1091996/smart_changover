@@ -134,6 +134,8 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
 
   return_value = SVCCTL_EvtNotAck;
   event_pckt = (hci_event_pckt *)(((hci_uart_pckt*)Event)->data);
+  aci_att_exchange_mtu_resp_event_rp0 *exchange_mtu_resp;
+  tBleStatus result;
 
   switch (event_pckt->evt)
   {
@@ -141,6 +143,25 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
       blecore_evt = (evt_blecore_aci*)event_pckt->data;
       switch (blecore_evt->ecode)
       {
+
+        case ACI_ATT_EXCHANGE_MTU_RESP_VSEVT_CODE:
+        {
+			APP_DBG_MSG("ACI_ATT_EXCHANGE_MTU_RESP_VSEVT_CODE \n");
+			exchange_mtu_resp = (aci_att_exchange_mtu_resp_event_rp0 *)blecore_evt->data;
+			APP_DBG_MSG("MTU_size = %d \n",exchange_mtu_resp->Server_RX_MTU );
+			result = hci_le_set_data_length(exchange_mtu_resp->Connection_Handle,exchange_mtu_resp->Server_RX_MTU,2120);
+			if (result != BLE_STATUS_SUCCESS)
+			{
+			  APP_DBG_MSG("set data length command error %x \n", result);
+			}
+			else
+			{
+			  APP_DBG_MSG("set data length command success \n");
+			}
+			break;
+
+        }
+
         case ACI_GATT_ATTRIBUTE_MODIFIED_VSEVT_CODE:
           /* USER CODE BEGIN EVT_BLUE_GATT_ATTRIBUTE_MODIFIED_BEGIN */
 
