@@ -98,19 +98,24 @@ void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotificatio
     /* CUSTOM_SVC */
     case CUSTOM_STM_CHAR_READ_NOTIFY_READ_EVT:
       /* USER CODE BEGIN CUSTOM_STM_CHAR_READ_NOTIFY_READ_EVT */
+    	APP_DBG_MSG(">>== READ EVENT FROM GATT CLIENT \n");
 
       /* USER CODE END CUSTOM_STM_CHAR_READ_NOTIFY_READ_EVT */
       break;
 
     case CUSTOM_STM_CHAR_READ_NOTIFY_NOTIFY_ENABLED_EVT:
       /* USER CODE BEGIN CUSTOM_STM_CHAR_READ_NOTIFY_NOTIFY_ENABLED_EVT */
+    	APP_DBG_MSG(">>== Notification Enable \n");
 
+    	Custom_App_Context.Char_read_notify_Notification_Status = 1;
       /* USER CODE END CUSTOM_STM_CHAR_READ_NOTIFY_NOTIFY_ENABLED_EVT */
       break;
 
     case CUSTOM_STM_CHAR_READ_NOTIFY_NOTIFY_DISABLED_EVT:
       /* USER CODE BEGIN CUSTOM_STM_CHAR_READ_NOTIFY_NOTIFY_DISABLED_EVT */
+    	APP_DBG_MSG(">>== Notification disabled \n");
 
+    	Custom_App_Context.Char_read_notify_Notification_Status = 0;
       /* USER CODE END CUSTOM_STM_CHAR_READ_NOTIFY_NOTIFY_DISABLED_EVT */
       break;
 

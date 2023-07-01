@@ -238,7 +238,9 @@ static SVCCTL_EvtAckStatus_t Custom_STM_Event_Handler(void *Event)
           {
             return_value = SVCCTL_EvtAckFlowEnable;
             /*USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_ACI_GATT_READ_PERMIT_REQ_VSEVT_CODE_1 */
-
+            //Forward data to app
+            Notification.Custom_Evt_Opcode = CUSTOM_STM_CHAR_READ_NOTIFY_READ_EVT;
+            Custom_STM_App_Notification(&Notification);
             /*USER CODE END CUSTOM_STM_Service_1_Char_1_ACI_GATT_READ_PERMIT_REQ_VSEVT_CODE_1*/
             aci_gatt_allow_read(read_req->Connection_Handle);
             /*USER CODE BEGIN CUSTOM_STM_Service_1_Char_1_ACI_GATT_READ_PERMIT_REQ_VSEVT_CODE_2 */
