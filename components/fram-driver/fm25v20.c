@@ -41,12 +41,8 @@
 extern SPI_HandleTypeDef hspi1;
 
 bool _initialized;
-uint8_t _chipSelectPin;
-uint8_t _writeProtectPin;
-uint8_t _holdPin;
-uint8_t _statusRegister;
+
 uint32_t _currentAddress;
-uint32_t _fenceAddress;
 uint32_t _maxAddress;
 
 /******************************************************************************
@@ -155,7 +151,7 @@ bool FM25VXX_Wakeup()
 
 void FM25VXX_WriteStatusRegister(uint8_t sRegister)
 {
-    _statusRegister = sRegister;
+    uint8_t statusRegister = sRegister;
 
     FM25VXX_CS_LOW();
     HAL_SPI_Transmit(&hspi1, &((uint8_t*){FM25VXX_WREN}), 1, 1000);
@@ -163,7 +159,7 @@ void FM25VXX_WriteStatusRegister(uint8_t sRegister)
 
     FM25VXX_CS_LOW();
     HAL_SPI_Transmit(&hspi1, &((uint8_t*){FM25VXX_WRSR}), 1, 1000);
-    HAL_SPI_Transmit(&hspi1, &_statusRegister, 1, 1000);
+    HAL_SPI_Transmit(&hspi1, &statusRegister, 1, 1000);
     FM25VXX_CS_HIGH();
 
 } /* WriteStatusRegister() */
@@ -183,13 +179,6 @@ uint8_t FM25VXX_ReadStatusRegister()
 FM25VXXError FM25VXX_WriteBytes(uint32_t address, uint8_t data, uint32_t len)
 {
     uint8_t write_addr[2] = {0};
-    /*
-     * Basic sanity check for writing past the fence
-     */
-    if (address >= _fenceAddress)
-    {
-        return (FM25VXX_WRITE_PAST_FENCE_REQUEST);
-    }
 
     FM25VXX_CS_LOW();
     HAL_SPI_Transmit(&hspi1, &((uint8_t*){FM25VXX_WREN}), 1, 1000);
