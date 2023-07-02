@@ -408,11 +408,36 @@ void SVCCTL_InitCustomSvc(void)
 }
 
 /**
- * @brief  Characteristic update
- * @param  CharOpcode: Characteristic identifier
- * @param  Service_Instance: Instance of the service to which the characteristic belongs
- *
+ * @brief  Send update to peer device over notification
+ * @param  p_data: pointer to data to be sent
+ * @param  len: length of data to be sent
  */
+tBleStatus ReadChar_SendNotify(uint8_t* p_data, uint16_t len)
+{
+      tBleStatus ret;
+      if( ( p_data == NULL ) || (len == 0) || ( len > BLE_READ_NOTIFY_CHAR_ATT_MAX_LEN) )
+      {
+        APP_DBG_MSG(" Invalid Params \n\r");
+        return BLE_STATUS_INVALID_PARAMS;
+      }
+      ret = aci_gatt_update_char_value(CustomContext.CustomCustom_SvcHdle,
+                                       CustomContext.CustomChar_Read_NotifyHdle,
+                                       0, /* charValOffset */
+                                       (uint8_t)len, /* charValueLen */
+                                       (uint8_t *)  p_data);
+      if (ret != BLE_STATUS_SUCCESS)
+      {
+        APP_DBG_MSG("  Fail   : aci_gatt_update_char_value CHAR_READ_NOTIFY command, result : 0x%x \n\r", ret);
+      }
+      else
+      {
+        APP_DBG_MSG("  Success: aci_gatt_update_char_value CHAR_READ_NOTIFY command\n\r");
+      }
+      return ret;
+}
+
+
+
 tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode, uint8_t *pPayload)
 {
   tBleStatus ret = BLE_STATUS_INVALID_PARAMS;

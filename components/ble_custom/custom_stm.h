@@ -91,6 +91,7 @@ extern uint8_t SizeChar_Write;
 void SVCCTL_InitCustomSvc(void);
 void Custom_STM_App_Notification(Custom_STM_App_Notification_evt_t *pNotification);
 tBleStatus Custom_STM_App_Update_Char(Custom_STM_Char_Opcode_t CharOpcode,  uint8_t *pPayload);
+tBleStatus ReadChar_SendNotify(uint8_t* p_data, uint16_t len);
 /* USER CODE BEGIN EF */
 
 /* USER CODE END EF */

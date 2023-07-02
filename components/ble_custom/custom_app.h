@@ -47,17 +47,38 @@ typedef struct
   uint16_t                                 ConnectionHandle;
 } Custom_App_ConnHandle_Not_evt_t;
 /* USER CODE BEGIN ET */
+typedef struct {
+  uint16_t CDL1; /* Current supplied on Line 1 */
+  uint16_t CDL2; /* Current supplied on Line 2 */
+  uint16_t CDL3; /* Current supplied on Line 3 */
+
+  uint16_t VDL1; /* Voltage supplied on Line 1 */
+  uint16_t VDL2; /* Voltage supplied on Line 2 */
+  uint16_t VDL3; /* Voltage supplied on Line 3 */
+
+  uint16_t PDL1; /* Power consumed on Line 1 */
+  uint16_t PDL2; /* Power consumed on Line 2 */
+  uint16_t PDL3; /* Power consumed on Line 3 */
+
+  uint8_t CMD_SL1;  /* L1 Supply command identifier */
+  uint8_t CMD_SL2;  /* L2 Supply command identifier */
+  uint8_t CMD_SL3;  /* L3 Supply command identifier */
+
+} sac_data_t;
+
 
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define DEV_ID                                  		(0x10)
+
 #define BLE_COMPLETE_NAME_LEN							(21)
 #define BLE_INCLUDE_SERVICE_UUID_IN_ADV_PACKT			(0)
 #define BLE_WRITE_CHAR_ATT_MAX_LEN				      	(50)
 #define BLE_READ_NOTIFY_CHAR_ATT_MAX_LEN			  	(50)
-#define DEV_ID                                  		(0x10)
 
+#define BLE_TEST_NOTIFY									(1)
 
 /* USER CODE END EC */
 
@@ -74,6 +95,7 @@ typedef struct
 /* Exported functions ---------------------------------------------*/
 void Custom_APP_Init(void);
 void Custom_APP_Notification(Custom_App_ConnHandle_Not_evt_t *pNotification);
+void Device_PacketSend();
 /* USER CODE BEGIN EF */
 
 /* USER CODE END EF */
