@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "custom_app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -723,6 +723,10 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
+#if (BLE_TEST_NOTIFY == 1)
+volatile uint8_t g_test = 0;
+#endif /* End of (BLE_TEST_NOTIFY == 1) */
+
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
@@ -730,6 +734,17 @@ void StartDefaultTask(void *argument)
   for(;;)
   {
     osDelay(1);
+#if (BLE_TEST_NOTIFY == 1)
+    if(g_test)
+    {
+      g_test = 0;
+      Device_PacketSend();
+    }
+#endif /* End of (BLE_TEST_NOTIFY == 1) */
+
+  }
+  /* USER CODE END 5 */
+}
   }
   /* USER CODE END 5 */
 }
